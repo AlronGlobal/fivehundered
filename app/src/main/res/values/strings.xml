@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FiveHundredPX</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="network_api_key">P7LLhKkPAnPUpbfAXk3Jq2iDjYmCx87zgfEDxQVS</string>
+    <string name="network_consumer_key">consumer_key</string>
+
+    <string name="data_photos">photos</string>
+    <string name="data_images">images</string>
+
+    <string name="data_format">format</string>
+    <string name="data_url">url</string>
+
+</resources>
