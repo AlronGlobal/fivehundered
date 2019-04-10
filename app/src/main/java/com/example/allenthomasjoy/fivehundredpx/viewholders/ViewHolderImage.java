@@ -12,6 +12,7 @@ import android.widget.TableRow;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.allenthomasjoy.fivehundredpx.MainActivity;
 import com.example.allenthomasjoy.fivehundredpx.R;
 import com.example.allenthomasjoy.fivehundredpx.dto.DataImage;
 
@@ -24,7 +25,7 @@ public class ViewHolderImage extends RecyclerView.ViewHolder {
         image = (ImageView) itemView.findViewById(R.id.item_image);
     }
 
-    public void bind(final Context context, Activity myActivity, DataImage dataImage) {
+    public void bind(final Context context, Activity myActivity, DataImage dataImage, final int i, final MainActivity.OnImageClickListener listener) {
         DisplayMetrics dm = new DisplayMetrics();
         myActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         float density = context.getResources().getDisplayMetrics().density;
@@ -42,5 +43,11 @@ public class ViewHolderImage extends RecyclerView.ViewHolder {
 
             }
         }
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onImageClick(i);
+            }
+        });
     }
 }

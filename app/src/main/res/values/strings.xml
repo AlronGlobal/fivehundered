@@ -7,8 +7,11 @@
 
     <string name="data_photos">photos</string>
     <string name="data_images">images</string>
+    <string name="data_page">page</string>
 
     <string name="data_format">format</string>
     <string name="data_url">url</string>
+
+    <string name="data_image_detail">IMAGE_DETAIL</string>
 
 </resources>

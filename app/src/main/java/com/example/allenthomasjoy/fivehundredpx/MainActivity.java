@@ -1,6 +1,7 @@
 package com.example.allenthomasjoy.fivehundredpx;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,17 +24,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context mContext;
-    private ArrayList<DataImage> mImage;
+    private ArrayList<DataImage> mImages;
 
     private RecyclerView recyclerImages;
     private StaggeredGridLayoutManager gaggeredGridLayoutManager;
     private ImageRecyclerAdapter imageRecyclerAdapter;
+    private int currentPageIndex;
+    private int totalPage;
 
+    public interface OnImageClickListener {
+        void onImageClick(int position);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,32 +49,60 @@ public class MainActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mImage = new ArrayList<>();
+        mImages = new ArrayList<>();
         initViews();
-        intializeRequest();
+        currentPageIndex = 0;
+        totalPage = 0;
+        serviceRequest();
     }
 
     private void initViews() {
         recyclerImages = (RecyclerView) findViewById(R.id.recycler_view);
         gaggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerImages.setLayoutManager(gaggeredGridLayoutManager);
-        imageRecyclerAdapter = new ImageRecyclerAdapter(mContext, mImage, MainActivity.this);
+        imageRecyclerAdapter = new ImageRecyclerAdapter(mContext, mImages, MainActivity.this, new OnImageClickListener() {
+            @Override
+            public void onImageClick(int position) {
+                mImages.get(position);
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                intent.putExtra(mContext.getString(R.string.data_image_detail), (Serializable) mImages.get(position));
+                startActivity(intent);
+            }
+        });
         recyclerImages.setAdapter(imageRecyclerAdapter);
+        recyclerImages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int[] pastVisibleItems =  gaggeredGridLayoutManager.findFirstCompletelyVisibleItemPositions(null);
+                int pastVisibleItem = pastVisibleItems[0];
+                if (pastVisibleItem + visibleItemCount >= totalItemCount) {
+                    serviceRequest();
+                }
+            }
+        });
     }
 
-    private void intializeRequest() {
-        mImage.clear();
-        RequestPhotos requestPhotos = new RequestPhotos(mContext,
+    private void serviceRequest() {
+        if (currentPageIndex == 0 ||currentPageIndex < totalPage) {
+            currentPageIndex++;
+        }
+        RequestPhotos requestPhotos = new RequestPhotos(mContext,currentPageIndex,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            currentPageIndex = new JsonParser().parse(response).getAsJsonObject().get("current_page").getAsInt();
+                            totalPage = new JsonParser().parse(response).getAsJsonObject().get("total_pages").getAsInt();
                             JsonArray photosArray = new JsonParser().parse(response).getAsJsonObject().getAsJsonArray(mContext.getString(R.string.data_photos));
                             for(int i = 0; i < photosArray.size(); i++) {
                                 JsonArray imagesArray = photosArray.get(i).getAsJsonObject().getAsJsonArray(mContext.getString(R.string.data_images));
                                 JsonObject imageObject = imagesArray.get(0).getAsJsonObject();
                                 DataImage image = new DataImage(mContext,imageObject);
-                                mImage.add(image);
+                                image.setName(photosArray.get(i).getAsJsonObject().get("name").getAsString());
+                                mImages.add(image);
                             }
                             imageRecyclerAdapter.notifyDataSetChanged();
                         } catch (Exception e) {

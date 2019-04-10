@@ -20,11 +20,13 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     private Context mContext;
     private List<DataImage> mDataImageList;
     private Activity myActivity;
+    private MainActivity.OnImageClickListener mListener;
 
-    public ImageRecyclerAdapter(Context context, List<DataImage> dataImageList, MainActivity mainActivity) {
+    public ImageRecyclerAdapter(Context context, List<DataImage> dataImageList, MainActivity mainActivity, MainActivity.OnImageClickListener onImageClickListener) {
         this.mContext = context;
         this.mDataImageList = dataImageList;
         this.myActivity = mainActivity;
+        this.mListener = onImageClickListener;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if (viewHolder instanceof  ViewHolderImage) {
-            ((ViewHolderImage)viewHolder).bind(this.mContext, this.myActivity, this.mDataImageList.get(i));
+            ((ViewHolderImage)viewHolder).bind(this.mContext, this.myActivity, this.mDataImageList.get(i),i, this.mListener);
         }
     }
 

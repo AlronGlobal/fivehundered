@@ -5,10 +5,13 @@ import android.content.Context;
 import com.example.allenthomasjoy.fivehundredpx.R;
 import com.google.gson.JsonObject;
 
-public class DataImage {
+import java.io.Serializable;
+
+public class DataImage implements Serializable {
 
     private String mFormat;
     private String mURL;
+    private String mName;
 
     public DataImage (Context context, JsonObject imageJson) {
         DataJsonObject image = new DataJsonObject(imageJson);
@@ -30,5 +33,13 @@ public class DataImage {
 
     public void setUrl(String url) {
         this.mURL = url;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
     }
 }

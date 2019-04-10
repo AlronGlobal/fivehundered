@@ -5,4 +5,5 @@
     <dimen name="dimens_1">1dp</dimen>
     <dimen name="dimens_2">2dp</dimen>
     <dimen name="dimens_3">3dp</dimen>
+    <dimen name="dimens_14">14dp</dimen>
 </resources>

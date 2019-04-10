@@ -15,8 +15,8 @@ public class RequestPhotos extends StringRequest {
     private Map<String, String> mHeaders;
     private Map<String, String> mParams;
 
-    public RequestPhotos(Context context, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(ServerEndPoints.PHOTOS_POPULAR.getRequestMethod(), ServerEndPoints.PHOTOS_POPULAR.getUrl()+"?"+context.getString(R.string.network_consumer_key) + "=" + context.getString(R.string.network_api_key), listener, errorListener);
+    public RequestPhotos(Context context, int currentPage, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(ServerEndPoints.PHOTOS_POPULAR.getRequestMethod(), ServerEndPoints.PHOTOS_POPULAR.getUrl()+"?"+context.getString(R.string.network_consumer_key) + "=" + context.getString(R.string.network_api_key) + "&" +context.getString(R.string.data_page) + "=" + currentPage, listener, errorListener);
         mHeaders = new HashMap<>();
         mHeaders.put("Content-Type","application/x-www-form-urlencoded");
         mHeaders.put("Authorization", "Basic cGdsOmJldGEyMDE2");
